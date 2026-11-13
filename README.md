@@ -1,100 +1,108 @@
-# Un solo panel para tu batería (BMS JK) y tu inversor (Easun/SmartESS) con un ESP32
+# One dashboard for your battery (JK BMS) and your inverter (Easun/SmartESS) with an ESP32
 
-Cómo juntar en un mismo sitio los datos de una **batería LiFePO4 con BMS JK** (Bluetooth) y de un
-**inversor solar Easun con dongle wifi** (nube SmartESS), verlos desde el móvil **también fuera de casa**, recibir
-avisos cuando la batería esté baja o llena y preguntarle a Alexa cómo van las baterías.
+> 🇪🇸 [Versión en español](README.es.md)
 
-Está escrito a partir de un montaje real, con sus tropiezos incluidos: lo que costó y cómo se resolvió está en
-cada capítulo y resumido en [8. Seguridad y problemas típicos](tutorial/08-seguridad-y-problemas.md).
+How to bring the data of a **LiFePO4 battery with a JK BMS** (Bluetooth) and of an **Easun solar inverter with a wifi
+dongle** (SmartESS cloud) into one place, see it from your phone **even when you are away from home**, get alerts
+when the battery is low or full, and ask Alexa how the batteries are doing.
 
-> **Solo lectura.** Nada de lo que se explica aquí escribe en el BMS ni en el inversor: no se cambia ningún ajuste, ni se
-> activa o desactiva la carga o la descarga. Si algún día quieres controlar algo, hazlo con un montaje aparte y con
-> mucho más cuidado: se trata de una instalación eléctrica con 15 kWh de energía.
+It is written from a real build, mistakes included: what cost time and how it was solved is in each chapter and
+summarised in [8. Security and common problems](tutorial-en/08-security-and-troubleshooting.md).
 
-## Qué conseguirás
+> **Read-only.** Nothing described here writes to the BMS or to the inverter: no setting is changed, and charging or
+> discharging is never switched on or off. If you ever want to *control* something, do it in a separate project and with
+> much more care: this is an electrical installation holding 15 kWh of energy.
 
-- **App Android** con tres pestañas: *Ahora* (porcentaje de carga, flujo de energía animado, cuánto durará la batería),
-  *Hoy* (kWh producidos y consumidos, gráficas de potencia y de carga) e *Histórico* (por días y por meses).
-- **Avisos por Telegram**: batería baja, crítica, llena, o el sistema ha dejado de enviar datos.
-- **Alexa**: «Alexa, abre *mi casa solar*» → «La batería está al 61 por ciento y se está descargando a unos 290 vatios…».
-- **Un histórico propio**, porque la nube del inversor solo guarda el día en curso.
-- Una **versión de la app para la familia** que no lleva dentro ninguna contraseña tuya.
+> **A note on the code.** The configuration files and source code keep their original Spanish comments, and the MQTT
+> topics and sensor names are Spanish (`solar/bateria/sensor/soc/state`, "voltaje", "corriente"…). The tutorial explains
+> everything in English; rename the topics to your taste if you like.
 
-## Arquitectura
+## What you will end up with
+
+- An **Android app** with three tabs: *Now* (charge percentage, animated energy flow, how long the battery will last),
+  *Today* (kWh produced and consumed, power and charge charts) and *History* (per day and per month).
+- **Telegram alerts**: battery low, critical, full, or the system stopped sending data.
+- **Alexa**: "Alexa, open *my solar home*" → "The battery is at 61 percent and discharging at about 290 watts…".
+- **Your own history**, because the inverter's cloud only keeps the current day.
+- A **family version of the app** that carries none of your passwords inside.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-    BMS["BMS JK<br/>(Bluetooth BLE)"] -->|BLE, solo lectura| ESP["ESP32<br/>ESPHome"]
-    ESP -->|wifi, MQTT + TLS| MQTT[("Broker MQTT en la nube<br/>EMQX Serverless")]
-    INV["Inversor Easun<br/>+ dongle wifi"] -->|wifi| NUBE[("Nube SmartESS<br/>API no oficial")]
+    BMS["JK BMS<br/>(Bluetooth BLE)"] -->|BLE, read-only| ESP["ESP32<br/>ESPHome"]
+    ESP -->|wifi, MQTT + TLS| MQTT[("Cloud MQTT broker<br/>EMQX Serverless")]
+    INV["Easun inverter<br/>+ wifi dongle"] -->|wifi| CLOUD[("SmartESS cloud<br/>unofficial API")]
 
-    MQTT -->|batería en directo| APP["App Android"]
-    MQTT --> SRV["Servidor PHP + MySQL<br/>(cron cada 5 min)"]
-    NUBE -->|serie del día| SRV
-    SRV -->|histórico, API de solo lectura| APP
-    SRV -->|avisos| TG["Telegram"]
-    SRV -->|estado actual| ALEXA["Skill de Alexa"]
+    MQTT -->|live battery| APP["Android app"]
+    MQTT --> SRV["PHP + MySQL server<br/>(cron every 5 min)"]
+    CLOUD -->|day series| SRV
+    SRV -->|history, read-only API| APP
+    SRV -->|alerts| TG["Telegram"]
+    SRV -->|current status| ALEXA["Alexa skill"]
 ```
 
-Las ideas clave:
+The key ideas:
 
-1. **El BMS solo admite una conexión Bluetooth a la vez** y el Bluetooth alcanza unos metros. Un ESP32 junto a las baterías
-   se conecta al BMS y lo reenvía por wifi a un broker MQTT en internet. Así el móvil lo ve desde cualquier sitio.
-2. **El inversor no habla con el BMS** (en este montaje). Sus datos salen de la nube de SmartESS, que tiene una API no
-   oficial. Su porcentaje de batería es una estimación por voltaje y **no es fiable**: el porcentaje bueno es el del BMS.
-3. **La nube del inversor no guarda histórico**, solo el día actual. Por eso hay un pequeño servidor que lo recoge cada
-   5 minutos y lo guarda.
-4. Todo lo que ve el usuario (app, Telegram, Alexa) **sale del servidor o del broker, con usuarios de solo lectura**.
+1. **The BMS accepts only one Bluetooth connection at a time** and Bluetooth only reaches a few metres. An ESP32 next to
+   the batteries connects to the BMS and forwards it over wifi to an MQTT broker on the internet. That way the phone sees
+   it from anywhere.
+2. **The inverter does not talk to the BMS** (in this build). Its data comes from the SmartESS cloud, which has an
+   unofficial API. Its battery percentage is an estimate from voltage and is **not reliable**: the good percentage is the
+   BMS one.
+3. **The inverter's cloud keeps no history**, only the current day. That is why a small server collects it every 5 minutes
+   and stores it.
+4. Everything the user sees (app, Telegram, Alexa) **comes from the server or the broker, using read-only users**.
 
-## Qué necesitas
+## What you need
 
-| Qué | Para qué | Coste aproximado |
+| What | What for | Approx. cost |
 |---|---|---|
-| Batería LiFePO4 con **BMS JK** con Bluetooth (probado con un JK-B2A20S20P) | Fuente del porcentaje real | — |
-| **Inversor Easun** con dongle wifi y cuenta en la app **SmartESS** | Producción, consumo | — |
-| Un **ESP32** clásico (DevKit con CP2102 o CH340) y un **cable USB de datos** | Puente BLE → wifi | 5–8 € |
-| Un cargador USB de 5 V y 1 A | Alimentar el ESP32 junto a las baterías | 3 € |
-| Cuenta gratuita en **EMQX Cloud** (plan Serverless) | Broker MQTT | gratis |
-| Un **servidor** con Apache, PHP 8 y MySQL, siempre encendido (un VPS, una Raspberry Pi…) | Histórico, avisos, Alexa | el que ya tengas |
-| Un PC con Windows, Linux o Mac | Compilar ESPHome y la app | — |
-| Android Studio | Compilar la app | gratis |
-| Cuenta de desarrollador de Amazon (gratis) | Skill de Alexa | gratis |
-| Telegram | Avisos | gratis |
+| LiFePO4 battery with a **JK BMS** with Bluetooth (tested with a JK-B2A20S20P) | Source of the real percentage | — |
+| **Easun inverter** with a wifi dongle and an account in the **SmartESS** app | Production, consumption | — |
+| A classic **ESP32** (DevKit with CP2102 or CH340) and a **USB data cable** | BLE → wifi bridge | €5–8 |
+| A 5 V / 1 A USB charger | To power the ESP32 next to the batteries | €3 |
+| A free **EMQX Cloud** account (Serverless plan) | MQTT broker | free |
+| A **server** with Apache, PHP 8 and MySQL, always on (a VPS, a Raspberry Pi…) | History, alerts, Alexa | whatever you have |
+| A PC with Windows, Linux or Mac | To build ESPHome and the app | — |
+| Android Studio | To build the app | free |
+| An Amazon developer account (free) | Alexa skill | free |
+| Telegram | Alerts | free |
 
-Las cuentas gratuitas tienen límites que cambian con el tiempo. Compruébalos en las páginas oficiales.
+Free tiers have limits that change over time. Check them on the official pages.
 
-## Índice
+## Contents
 
-1. [ESP32 y BMS: leer la batería por Bluetooth y publicarla](tutorial/01-esp32-bms.md)
-2. [Broker MQTT: llevar los datos a internet de forma segura](tutorial/02-broker-mqtt.md)
-3. [El inversor: la API de SmartESS](tutorial/03-inversor-smartess.md)
-4. [El servidor: colector, histórico y API](tutorial/04-servidor-colector.md)
-5. [La app Android](tutorial/05-app-android.md)
-6. [Avisos por Telegram](tutorial/06-avisos-telegram.md)
-7. [Alexa](tutorial/07-alexa.md)
-8. [Seguridad y problemas típicos](tutorial/08-seguridad-y-problemas.md)
+1. [ESP32 and BMS: read the battery over Bluetooth and publish it](tutorial-en/01-esp32-bms.md)
+2. [MQTT broker: get the data onto the internet safely](tutorial-en/02-mqtt-broker.md)
+3. [The inverter: the SmartESS API](tutorial-en/03-inverter-smartess.md)
+4. [The server: collector, history and API](tutorial-en/04-server-collector.md)
+5. [The Android app](tutorial-en/05-android-app.md)
+6. [Telegram alerts](tutorial-en/06-telegram-alerts.md)
+7. [Alexa](tutorial-en/07-alexa.md)
+8. [Security and common problems](tutorial-en/08-security-and-troubleshooting.md)
 
-Si solo quieres la batería en un panel, con los capítulos 1 y 2 y la parte de MQTT de la app tienes bastante. El
-inversor, el servidor, Telegram y Alexa son capas que se pueden añadir después, una a una.
+If you only want the battery on a dashboard, chapters 1 and 2 plus the MQTT part of the app are enough. The inverter,
+the server, Telegram and Alexa are layers you can add later, one at a time.
 
-## Probado con
+## Tested with
 
-ESPHome 2026.10 (ESP-IDF 5.5), `syssi/esphome-jk-bms` (rama `main`), Python 3.12, PHP 8.0, MariaDB/MySQL, Apache 2.4,
-Android Studio con AGP 9.1, Kotlin 2.4, Gradle 9.3, compileSdk 36 y minSdk 26, Node 24 para las pruebas de la skill.
+ESPHome 2026.10 (ESP-IDF 5.5), `syssi/esphome-jk-bms` (`main` branch), Python 3.12, PHP 8.0, MariaDB/MySQL, Apache 2.4,
+Android Studio with AGP 9.1, Kotlin 2.4, Gradle 9.3, compileSdk 36 and minSdk 26, Node 24 for the skill tests.
 
-## Avisos
+## Warnings
 
-- La **API de SmartESS no es oficial**: se ha deducido de proyectos de la comunidad y puede cambiar sin avisar (de hecho
-  cambió durante este montaje; ver el capítulo 3). Úsala solo con tu propia cuenta y con prudencia.
-- Este proyecto **no está afiliado** a JK, Easun, SmartESS, EMQX, Telegram ni Amazon.
-- Los porcentajes y estimaciones son orientativos. No uses esto como única protección de una instalación eléctrica.
+- The **SmartESS API is unofficial**: it was worked out from community projects and can change without notice (it did
+  change during this build; see chapter 3). Use it only with your own account and with care.
+- This project is **not affiliated** with JK, Easun, SmartESS, EMQX, Telegram or Amazon.
+- Percentages and estimates are indicative. Do not use this as the only protection of an electrical installation.
 
-## Dónde está el código
+## Where the code is
 
-Cada capítulo explica el porqué y las partes importantes, y apunta a la carpeta con el código completo:
-`esp32/`, `servidor/`, `android/`, `alexa/`, `script-pc/` y `docs/` (ejemplos de respuestas de SmartESS).
+Each chapter explains the why and the important parts, and points to the folder with the full code:
+`esp32/`, `servidor/` (server), `android/`, `alexa/`, `script-pc/` and `docs/` (sample SmartESS responses).
 
-## Licencia
+## License
 
-Código y documentación bajo licencia **MIT** (ver `LICENSE`). Úsalo, cámbialo y compártelo; sin garantías.
-El icono de la app es genérico: sustitúyelo por el tuyo en `android/app/src/main/res/mipmap-*` y `drawable-nodpi`.
+Code and documentation under the **MIT** license (see `LICENSE`). Use it, change it and share it; no warranty.
+The app icon is generic: replace it with your own in `android/app/src/main/res/mipmap-*` and `drawable-nodpi`.
