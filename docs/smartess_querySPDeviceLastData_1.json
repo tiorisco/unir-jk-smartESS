@@ -1,0 +1,138 @@
+{
+  "err": 0,
+  "desc": "ERR_NONE",
+  "dat": {
+    "gts": "1794456668484",
+    "pars": {
+      "gd_": [
+        {
+          "id": "gd_mains_voltage",
+          "par": "Grid Voltage",
+          "val": "0.0",
+          "unit": "V"
+        },
+        {
+          "id": "gd_mains_frequency",
+          "par": "Grid frequency",
+          "val": "0.00",
+          "unit": "HZ"
+        }
+      ],
+      "sy_": [
+        {
+          "id": "sy_operating_mode",
+          "par": "Operating mode",
+          "val": "Off-grid mode"
+        },
+        {
+          "id": "sy_dcdc_temperature",
+          "par": "DCDC  module Termperature",
+          "val": "44",
+          "unit": "°C"
+        },
+        {
+          "id": "sy_inverter_temperature",
+          "par": "PV module  temperature",
+          "val": "49",
+          "unit": "°C"
+        },
+        {
+          "id": "sy_pv_temperature",
+          "par": "PV temperature",
+          "val": "64",
+          "unit": "°C"
+        },
+        {
+          "id": "sy_current_output_priority",
+          "par": "Current output priority",
+          "val": "N/A"
+        },
+        {
+          "id": "sy_current_charging_priority",
+          "par": "Current charging priority",
+          "val": "N/A"
+        }
+      ],
+      "pv_": [
+        {
+          "id": "pv_voltage",
+          "par": "PV voltage",
+          "val": "294.7",
+          "unit": "V"
+        },
+        {
+          "id": "pv_current",
+          "par": "PV current",
+          "val": "2.7",
+          "unit": "A"
+        },
+        {
+          "id": "pv_output_power",
+          "par": "PV power",
+          "val": "1019",
+          "unit": "W"
+        }
+      ],
+      "bt_": [
+        {
+          "id": "bt_battery_voltage",
+          "par": "Battery voltage",
+          "val": "53.4",
+          "unit": "V"
+        },
+        {
+          "id": "bt_battery_current",
+          "par": "Battery current",
+          "val": "5.6",
+          "unit": "A"
+        },
+        {
+          "id": "bt_battery_capacity",
+          "par": "Battery SOC",
+          "val": "90",
+          "unit": "%"
+        }
+      ],
+      "bc_": [
+        {
+          "id": "bc_output_voltage",
+          "par": "Output voltage",
+          "val": "229.2",
+          "unit": "V"
+        },
+        {
+          "id": "bc_output_current",
+          "par": "Output current",
+          "val": "1.0",
+          "unit": "A"
+        },
+        {
+          "id": "bc_output_frequency",
+          "par": "Output frequency",
+          "val": "50.01",
+          "unit": "HZ"
+        },
+        {
+          "id": "bc_load_active_power",
+          "par": "Output active power",
+          "val": "175",
+          "unit": "W"
+        },
+        {
+          "id": "bc_output_apparent_power",
+          "par": "Output apparent power",
+          "val": "229",
+          "unit": "VA"
+        },
+        {
+          "id": "bc_load_percentage",
+          "par": "Load percent",
+          "val": "4",
+          "unit": "%"
+        }
+      ]
+    }
+  },
+  "errorMessage": "ERR_NONE",
+  "success": true
+}

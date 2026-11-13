@@ -1,0 +1,80 @@
+{
+ "err": 0,
+ "desc": "ERR_NONE",
+ "dat": {
+  "parameter": [
+   {
+    "par": "grid_active_power",
+    "name": "Grid power",
+    "val": "0",
+    "unit": "W",
+    "sortnum": 5
+   },
+   {
+    "par": "bt_battery_current",
+    "name": "Battery current",
+    "val": "-6.3",
+    "unit": "A",
+    "sortnum": 12
+   },
+   {
+    "par": "pv_voltage",
+    "name": "PV voltage",
+    "val": "30.5",
+    "unit": "V",
+    "sortnum": 14
+   },
+   {
+    "par": "pv_current",
+    "name": "PV current",
+    "val": "0.2",
+    "unit": "A",
+    "sortnum": 15
+   },
+   {
+    "par": "bc_load_percentage",
+    "name": "Load percent",
+    "val": "6",
+    "unit": "%",
+    "sortnum": 17
+   },
+   {
+    "par": "sy_dcdc_temperature",
+    "name": "DCDC  module Termperature",
+    "val": "40",
+    "unit": "°C",
+    "sortnum": 18
+   },
+   {
+    "par": "sy_pv_temperature",
+    "name": "PV temperature",
+    "val": "35",
+    "unit": "°C",
+    "sortnum": 20
+   },
+   {
+    "par": "bt_battery_capacity",
+    "name": "Battery SOC",
+    "val": "80",
+    "unit": "%",
+    "sortnum": 21
+   },
+   {
+    "par": "energy_today",
+    "name": "Daily PV energy generation",
+    "val": "0.13",
+    "unit": "kWh",
+    "sortnum": 64
+   },
+   {
+    "par": "energy_total",
+    "name": "Total PV energy generation",
+    "val": "8409.1",
+    "unit": "kWh",
+    "sortnum": 65
+   }
+  ]
+ },
+ "errorMessage": "ERR_NONE",
+ "success": true
+}

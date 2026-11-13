@@ -1,0 +1,68 @@
+{
+ "err": 0,
+ "desc": "ERR_NONE",
+ "dat": {
+  "brand": 0,
+  "status": 4,
+  "date": "2026-11-13 05:23:10",
+  "bt_status": [
+   {
+    "par": "bt_battery_capacity",
+    "val": "80.0000",
+    "unit": "%",
+    "status": 1
+   },
+   {
+    "par": "battery_active_power",
+    "val": "-0.3300",
+    "unit": "kW",
+    "status": 1
+   }
+  ],
+  "pv_status": [
+   {
+    "par": "pv_output_power",
+    "val": "0.0070",
+    "unit": "kW",
+    "status": 2
+   }
+  ],
+  "gd_status": [
+   {
+    "par": "grid_active_power",
+    "val": "0.0000",
+    "unit": "kW",
+    "status": 2
+   }
+  ],
+  "bc_status": [
+   {
+    "par": "load_active_power",
+    "val": "0.2910",
+    "unit": "kW",
+    "status": -1
+   }
+  ],
+  "ol_status": [
+   {
+    "par": "oil_output_power",
+    "val": "0",
+    "status": 0
+   }
+  ],
+  "we_status": [
+   {
+    "par": "wind_output_power",
+    "val": "0",
+    "status": 0
+   }
+  ],
+  "mi_status": [],
+  "mt_status": [],
+  "wp_status": [],
+  "gn_status": [],
+  "fd_status": []
+ },
+ "errorMessage": "ERR_NONE",
+ "success": true
+}

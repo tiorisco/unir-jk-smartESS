@@ -1,0 +1,171 @@
+{
+  "err": 0,
+  "desc": "ERR_NONE",
+  "dat": [
+    {
+      "title": "id",
+      "val": "2c1c918ce0865a433b82d4cc3239bfaf"
+    },
+    {
+      "title": "Marca De Tiempo",
+      "val": "2026-11-12 12:11:08"
+    },
+    {
+      "title": "inverter",
+      "val": "1E00"
+    },
+    {
+      "title": "Serial number",
+      "val": "XXXXXXXXXXXXXX"
+    },
+    {
+      "title": "Operating mode",
+      "val": "Off-grid mode"
+    },
+    {
+      "title": "Grid Voltage",
+      "unit": "V",
+      "val": "0.0"
+    },
+    {
+      "title": "Grid frequency",
+      "unit": "HZ",
+      "val": "0.00"
+    },
+    {
+      "title": "Grid power",
+      "unit": "W",
+      "val": "0"
+    },
+    {
+      "title": "Output voltage",
+      "unit": "V",
+      "val": "229.2"
+    },
+    {
+      "title": "Output current",
+      "unit": "A",
+      "val": "1.0"
+    },
+    {
+      "title": "Output frequency",
+      "unit": "HZ",
+      "val": "50.01"
+    },
+    {
+      "title": "Output active power",
+      "unit": "W",
+      "val": "175"
+    },
+    {
+      "title": "Output apparent power",
+      "unit": "VA",
+      "val": "229"
+    },
+    {
+      "title": "Battery voltage",
+      "unit": "V",
+      "val": "53.4"
+    },
+    {
+      "title": "Battery current",
+      "unit": "A",
+      "val": "5.6"
+    },
+    {
+      "title": "Battery power",
+      "unit": "W",
+      "val": "224"
+    },
+    {
+      "title": "PV voltage",
+      "unit": "V",
+      "val": "294.7"
+    },
+    {
+      "title": "PV current",
+      "unit": "A",
+      "val": "2.7"
+    },
+    {
+      "title": "PV power",
+      "unit": "W",
+      "val": "1019"
+    },
+    {
+      "title": "Load percent",
+      "unit": "%",
+      "val": "4"
+    },
+    {
+      "title": "DCDC  module Termperature",
+      "unit": "°C",
+      "val": "44"
+    },
+    {
+      "title": "PV module  temperature",
+      "unit": "°C",
+      "val": "49"
+    },
+    {
+      "title": "PV temperature",
+      "unit": "°C",
+      "val": "64"
+    },
+    {
+      "title": "Battery SOC",
+      "unit": "%",
+      "val": "90"
+    },
+    {
+      "title": "Current output priority",
+      "val": "--"
+    },
+    {
+      "title": "Current charging priority",
+      "val": "--"
+    },
+    {
+      "title": "Daily PV energy generation",
+      "unit": "kWh",
+      "val": "5.82"
+    },
+    {
+      "title": "Total PV energy generation",
+      "unit": "kWh",
+      "val": "8403.72"
+    },
+    {
+      "title": "Whether the battery is lit or not",
+      "val": "Battery icon lights up"
+    },
+    {
+      "title": "Whether PV is lit or not",
+      "val": "PV icon lights up"
+    },
+    {
+      "title": "Whether the electricity is on",
+      "val": "Power icon is lit"
+    },
+    {
+      "title": "Whether the load is lit",
+      "val": "Load icon lights up"
+    },
+    {
+      "title": "Whether the PV is connected to the system",
+      "val": "PV is connected to the system"
+    },
+    {
+      "title": "Whether the mains power is connected to the system",
+      "val": "Mains power is not connected to the system"
+    },
+    {
+      "title": "Whether the battery is charged or not",
+      "val": "Battery charge"
+    },
+    {
+      "title": "Whether the system is loaded",
+      "val": "System output is loaded"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+## Copia como local.properties (ignorado por git) y rellena. NUNCA subas el archivo real.
+sdk.dir=C\:\\Users\\TU_USUARIO\\AppData\\Local\\Android\\Sdk
+
+## Broker MQTT (EMQX Serverless u otro, por TLS, puerto 8883)
+mqtt.host=xxxxxxxx.ala.eu-central-1.emqxsl.com
+# Recomendado: un usuario SOLO LECTURA (permiso de suscripcion a solar/bateria/# y denegar publicar)
+mqtt.user=usuario_app
+mqtt.password=clave_app
+
+## Cuenta de SmartESS (nombre de usuario, no el correo). Solo para tu version personal:
+## queda DENTRO del APK, asi que no la uses en la version para repartir.
+smartess.user=tu_usuario_smartess
+smartess.password=tu_clave_smartess
+
+## Colector del servidor (historico). Token de LECTURA (SOLAR_APP_TOKEN)
+servidor.url=https://tu-servidor.duckdns.org
+servidor.token=token_de_lectura
+
+## Version para la familia (./gradlew assembleFamilia): usuario MQTT de solo lectura propio.
+## Su contraseña NO debe parecerse a la de SmartESS ni a ninguna otra.
+familia.mqtt.user=usuario_familia
+familia.mqtt.password=clave_familia

@@ -1,0 +1,11 @@
+{
+  "name": "terrenico-alexa",
+  "version": "1.0.0",
+  "description": "Skill de Alexa: estado de la bateria y de las placas (solo lectura)",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "ask-sdk-core": "^2.14.0",
+    "ask-sdk-model": "^1.86.0"
+  }
+}

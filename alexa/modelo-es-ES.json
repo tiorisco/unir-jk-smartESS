@@ -1,0 +1,60 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "mi casa solar",
+      "intents": [
+        { "name": "AMAZON.CancelIntent", "samples": [] },
+        { "name": "AMAZON.HelpIntent", "samples": [] },
+        { "name": "AMAZON.StopIntent", "samples": [] },
+        { "name": "AMAZON.NavigateHomeIntent", "samples": [] },
+        { "name": "AMAZON.FallbackIntent", "samples": [] },
+        {
+          "name": "EstadoBateriaIntent",
+          "slots": [],
+          "samples": [
+            "cómo están las baterías",
+            "cómo está la batería",
+            "cómo van las baterías",
+            "cómo va la batería",
+            "qué tal las baterías",
+            "qué tal la batería",
+            "estado de las baterías",
+            "estado de la batería",
+            "dime el estado de la batería",
+            "dime cómo están las baterías",
+            "qué porcentaje tiene la batería",
+            "qué porcentaje de carga tiene la batería",
+            "cuánta batería queda",
+            "cuánta carga queda",
+            "cuánta batería hay",
+            "cuál es el nivel de la batería",
+            "cuál es la carga de la batería",
+            "nivel de batería",
+            "carga de la batería"
+          ]
+        },
+        {
+          "name": "EstadoSolarIntent",
+          "slots": [],
+          "samples": [
+            "cómo están las placas",
+            "cómo van las placas",
+            "qué tal las placas",
+            "cuánto producen las placas",
+            "cuánta energía producen las placas",
+            "cuánta energía estoy produciendo",
+            "cuánto estamos produciendo",
+            "cuánto consume la casa",
+            "cuánto estamos consumiendo",
+            "cuánta energía consume la casa",
+            "cómo va la energía",
+            "cómo va la producción solar",
+            "producción solar",
+            "consumo de la casa"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}

@@ -1,0 +1,24 @@
+# Paso 1: sirve solo para descubrir la direccion MAC del BMS.
+# Se graba en el ESP32, se miran los logs y se copia la MAC del dispositivo "JK-...".
+
+esphome:
+  name: jk-descubrir
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: true
+  on_ble_advertise:
+    - then:
+        - lambda: |-
+            std::string n = x.get_name();
+            if (n.rfind("JK", 0) == 0) {
+              ESP_LOGW("descubrir", "BMS encontrado: nombre=%s MAC=%s RSSI=%d",
+                       n.c_str(), x.address_str().c_str(), x.get_rssi());
+            }

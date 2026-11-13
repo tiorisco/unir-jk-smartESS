@@ -1,0 +1,4 @@
+Options -Indexes
+<FilesMatch "\.(sql|md|log|txt)$">
+    Require all denied
+</FilesMatch>

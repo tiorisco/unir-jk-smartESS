@@ -1,0 +1,26 @@
+local.properties
+secrets.yaml
+.env
+__pycache__/
+*.pyc
+.venv/
+.gradle/
+build/
+.idea/
+despliegue/
+*.jks
+key.properties
+alexa/lambda/config.js
+alexa/lambda/node_modules/
+
+# Compilacion y registros
+.esphome/
+*.log
+logs.txt
+logs_err.txt
+build_*.log
+.gradle/
+node_modules/
+*.tar.gz
+*.apk
+*.aab

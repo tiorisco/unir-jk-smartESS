@@ -1,0 +1,159 @@
+# Paso 2: ESP32 como puente BMS JK (BLE) -> wifi -> broker MQTT en la nube.
+# SOLO LECTURA: no se declara ningun switch, asi que nunca se escribe en el BMS.
+# Los secretos estan en secrets.yaml (ignorado por git).
+
+substitutions:
+  name: jk-bms
+  # Si el SOC o el voltaje salen absurdos, prueba JK02_24S.
+  # Sin confirmar cual usa el JK-B2A20S20P (ver el capitulo 1 del tutorial).
+  protocol_version: JK02_32S
+
+esphome:
+  name: ${name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: github://syssi/esphome-jk-bms@main
+    refresh: 1d
+
+logger:
+
+# Actualizacion por wifi: despues de la primera grabacion por USB se puede
+# grabar desde el PC sin tocar el ESP32 (esphome upload jk-bms.yaml --device <IP>)
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# Los datos de cada sensor salen en: solar/bateria/sensor/<nombre>/state
+# Estado del dispositivo (online/offline) en: solar/bateria/status
+mqtt:
+  broker: !secret mqtt_broker
+  port: 8883
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+  topic_prefix: solar/bateria
+  discovery: false
+  # En ESP-IDF, sin certificate_authority ESPHome NO usa TLS (habla en texto
+  # plano y el broker corta). Raiz: DigiCert Global Root G2, verificada contra
+  # el broker real (valida por TLS 1.3).
+  certificate_authority: |
+    -----BEGIN CERTIFICATE-----
+    MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
+    MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+    d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH
+    MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT
+    MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j
+    b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG
+    9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI
+    2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx
+    1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ
+    q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz
+    tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ
+    vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP
+    BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV
+    5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY
+    1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4
+    NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG
+    Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91
+    8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe
+    pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl
+    MrY=
+    -----END CERTIFICATE-----
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: false
+
+ble_client:
+  - mac_address: !secret bms_mac
+    id: client0
+
+jk_bms_ble:
+  - ble_client_id: client0
+    protocol_version: ${protocol_version}
+    throttle: 10s
+    id: bms0
+
+binary_sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    charging:
+      name: "carga activada"
+    discharging:
+      name: "descarga activada"
+    online_status:
+      name: "online"
+
+sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    state_of_charge:
+      name: "soc"
+    total_voltage:
+      name: "voltaje"
+    current:
+      name: "corriente"
+    power:
+      name: "potencia"
+    capacity_remaining:
+      name: "capacidad restante"
+    temperature_sensor_1:
+      name: "temp1"
+    temperature_sensor_2:
+      name: "temp2"
+    mosfet_temperature:
+      name: "temp mosfet"
+    min_cell_voltage:
+      name: "celda min"
+    max_cell_voltage:
+      name: "celda max"
+    delta_cell_voltage:
+      name: "celda delta"
+    # 16 celdas en serie (53,4 V / 3,34 V por celda).
+    cell_voltage_1: {name: "celda 1"}
+    cell_voltage_2: {name: "celda 2"}
+    cell_voltage_3: {name: "celda 3"}
+    cell_voltage_4: {name: "celda 4"}
+    cell_voltage_5: {name: "celda 5"}
+    cell_voltage_6: {name: "celda 6"}
+    cell_voltage_7: {name: "celda 7"}
+    cell_voltage_8: {name: "celda 8"}
+    cell_voltage_9: {name: "celda 9"}
+    cell_voltage_10: {name: "celda 10"}
+    cell_voltage_11: {name: "celda 11"}
+    cell_voltage_12: {name: "celda 12"}
+    cell_voltage_13: {name: "celda 13"}
+    cell_voltage_14: {name: "celda 14"}
+    cell_voltage_15: {name: "celda 15"}
+    cell_voltage_16: {name: "celda 16"}
+
+  # Diagnostico del puente (solar/bateria/sensor/<nombre>/state)
+  - platform: wifi_signal
+    name: "wifi dbm"
+    update_interval: 60s
+  - platform: uptime
+    name: "tiempo encendido"
+    update_interval: 60s
+  - platform: ble_client
+    ble_client_id: client0
+    type: rssi
+    name: "bms rssi"
+    update_interval: 60s
+
+text_sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    errors:
+      name: "errores"
+    software_version:
+      name: "version software"
+    hardware_version:
+      name: "version hardware"

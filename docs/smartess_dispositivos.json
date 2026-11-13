@@ -1,0 +1,23 @@
+{
+  "err": 0,
+  "desc": "ERR_NONE",
+  "dat": {
+    "total": 1,
+    "page": 0,
+    "pagesize": 50,
+    "device": [
+      {
+        "pn": "XXXX",
+        "devcode": 2507,
+        "devaddr": 1,
+        "sn": "XXXX",
+        "deviceSn": "XXXXXXXXXXXXXX",
+        "alias": "XXXX",
+        "timezone": 3600,
+        "status": 4,
+        "uid": 4634908,
+        "pid": 5247861
+      }
+    ]
+  }
+}
